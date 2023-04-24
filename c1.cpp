@@ -6,6 +6,11 @@
 
 int add(int a, int b);
 
+constexpr int five()
+{
+    return 5;
+}
+
 int main()
 {
 	int num { 2 }; // initialize num with the return value of getValueFromUserUB()
@@ -43,5 +48,28 @@ int main()
 // #ifndef FOO // This FOO does not get replaced because it’s part of another preprocessor directive
 //     std::cout << FOO << '\n'; // This FOO gets replaced with 9 because it's part of the normal code
 // #endif
+
+    std::int8_t myint{65}; // initialize myint with value 65
+    std::cout << myint;    // you're probably expecting this to print 65, actually 'A
+    std::cout << static_cast<int>(myint); // prints 65
+
+    constexpr int five1 {five()};
+    std::cout << five1 << std::endl;
+
+    int x1{4};
+    std::cout << std::endl << x1 << std::endl;
+    std::cout << std::endl << ++x1 << std::endl;
+    std::cout << std::endl << x1++ << std::endl;
+    std::cout << std::endl << x1 << std::endl;
+
+
+    int x2{4};
+
+    {
+        int x3{5};
+        std::cout << x3 << std::endl;
+    }
+    // std::cout << x3 << std::endl; // x3 is not visible here
+
 	return 0;
 }
