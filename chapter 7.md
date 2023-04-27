@@ -116,10 +116,36 @@ int main()
 
 ## 7.12 — Introduction to testing your code
 
+## 7.17 — Assert and static_assert
 
+**Use assertions to document cases that should be logically impossible.**
+```cpp
+#include <cassert> // for assert()
+#include <cmath> // for std::sqrt
+#include <iostream>
 
+double calculateTimeUntilObjectHitsGround(double initialHeight, double gravity)
+{
+  assert(gravity > 0.0); // The object won't reach the ground unless there is positive gravity.
+//   OR
+  assert(found && "Car could not be found in database");
 
+  if (initialHeight <= 0.0)
+  {
+    // The object is already on the ground. Or buried.
+    return 0.0;
+  }
 
+  return std::sqrt((2.0 * initialHeight) / gravity);
+}
+
+int main()
+{
+  std::cout << "Took " << calculateTimeUntilObjectHitsGround(100.0, -9.8) << " second(s)\n";
+
+  return 0;
+}
+```
 
 
 
