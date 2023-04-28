@@ -317,7 +317,7 @@ int main()
 }
 ```
 
-
+Favor references over pointers unless the additional capabilities provided by pointers are needed.
 
 
 
