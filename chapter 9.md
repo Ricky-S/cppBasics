@@ -320,40 +320,177 @@ int main()
 Favor references over pointers unless the additional capabilities provided by pointers are needed.
 
 
+## 9.8 — Pointers and const
+```cpp
+int main()
+{
+    int x{ 5 }; // non-const
+    const int* ptr { &x }; // ptr points to a "const int"
+    std::cout << "x = " << x << std::endl; // x = 5
+    std::cout << "*ptr = " << *ptr << std::endl; // *ptr = 5
+    // *ptr = 6;  // not allowed: ptr points to a "const int" so we can't change the value through ptr
+    x = 6; // allowed: the value is still non-const when accessed through non-const identifier x
+    std::cout << "x = " << x << std::endl; // x = 6
+    std::cout << "*ptr = " << *ptr << std::endl;  // *ptr = 6
+    return 0;
+}
+```
+
+To summarize, you only need to remember 4 rules, and they are pretty logical:
+
++ A non-const pointer can be assigned another address to change what it is pointing at
++ A const pointer always points to the same address, and this address can not be changed.
++ A pointer to a non-const value can change the value it is pointing to. These can not point to a const value.
++ A pointer to a const value treats the value as const when accessed through the pointer, and thus can not change the value it is pointing to. These can be pointed to const or non-const l-values (but not r-values, which don’t have an address)
+
+```cpp
+int main()
+{
+    int value { 5 };
+
+    int* ptr0 { &value };             // ptr0 points to an "int" and is not const itself, so this is a normal pointer.
+    const int* ptr1 { &value };       // ptr1 points to a "const int", but is not const itself, so this is a pointer to a const value.
+    int* const ptr2 { &value };       // ptr2 points to an "int", but is const itself, so this is a const pointer (to a non-const value).
+    const int* const ptr3 { &value }; // ptr3 points to an "const int", and it is const itself, so this is a const pointer to a const value.
+
+    return 0;
+}
+```
+```cpp
+// Just replace: "*" = "pointer points to"
+int* ptr1;       // pointer points to "int" (it's a normal pointer)
+const int* ptr2; // pointer points to "const int" (it's a pointer to a const value)
+int const* ptr3; // pointer points to "int const" (just same above)
+int* const ptr4; // const pointer points to "int" (it's a const pointer to a non-const value)
+const int * const ptr5; // const pointer points to "const int" (it's a const pointer to a const value)
+int const * const ptr6; // const pointer points to "int const" (just same above)
+
+// if "const" is the left side "*" => it belongs to the value
+// if "const" is the right side "*" => it belongs to the pointer
+
+//  Just replace: "&" = "references to"
+int*& rptr8;    // references to (pointer points to "int")
+const int **& rpptr9; // references to (pointer points to(pointer points to "const int"))
+const int * const *& rpptr10; // references to (pointer points to(const pointer points to "const int"))
+```
+
+## 9.9 — Pass by address
+```cpp
+#include <iostream>
+#include <string>
+
+void printByValue(std::string val) // The function parameter is a copy of str
+{
+    std::cout << val << '\n'; // print the value via the copy
+}
+
+void printByReference(const std::string& ref) // The function parameter is a reference that binds to str
+{
+    std::cout << ref << '\n'; // print the value via the reference
+}
+
+void printByAddress(const std::string* ptr) // The function parameter is a pointer that holds the address of str
+{
+    std::cout << *ptr << '\n'; // print the value via the dereferenced pointer
+}
+
+int main()
+{
+    std::string str{ "Hello, world!" };
+
+    printByValue(str); // pass str by value, makes a copy of str
+    printByReference(str); // pass str by reference, does not make a copy of str
+    printByAddress(&str); // pass str by address, does not make a copy of str
+
+    return 0;
+}
+```
+
+**Prefer pass by reference to pass by address unless you have a specific reason to use pass by address.**
 
 
+## 9.10 — Pass by address (part 2)
+
+```cpp
+void print(int* input)  //  input should be a pointer.
+
+void print(int *input)  //  Same as previous.
+
+void print(int &input)  //  input should be a reference to a value.
+
+void print(int* &input)  //  input should be a reference to a pointer.
+
+void print(int *&input)  //  same as previous.
+```
+
+Pass by address… by reference?
+```cpp
+#include <iostream>
+
+void nullify(int*& refptr) // refptr is now a reference to a pointer
+{
+    refptr = nullptr; // Make the function parameter a null pointer
+}
+
+int main()
+{
+    int x{ 5 };
+    int* ptr{ &x }; // ptr points to x
+
+    std::cout << "ptr is " << (ptr ? "non-null\n" : "null\n"); // ptr is non-null
+
+    nullify(ptr);
+
+    std::cout << "ptr is " << (ptr ? "non-null\n" : "null\n"); // ptr is null
+    return 0;
+}
+```
+
+Because refptr is now a reference to a pointer, when ptr is passed as an argument, refptr is bound to ptr. This means any changes to refptr are made to ptr.
 
 
+## ** 9.11 — Return by reference and return by address
+```cpp
+std::string returnByValue(); // returns a copy of a std::string (expensive)
 
+std::string&       returnByReference(); // returns a reference to an existing std::string (cheap)
+const std::string& returnByReferenceToConst(); // returns a const reference to an existing std::string (cheap)
+```
+```cpp
+// Don’t return non-const local static variables by reference
+#include <iostream>
+#include <string>
 
+const int& getNextId()
+{
+    static int s_x{ 0 }; // note: variable is non-const
+    ++s_x; // generate the next id
+    return s_x; // and return a reference to it
+}
 
+int main()
+{
+    const int& id1 { getNextId() }; // id1 is a reference
+    const int& id2 { getNextId() }; // id2 is a reference
 
+    std::cout << id1 << id2 << '\n';
 
+    return 0;
+}
+```
+```cpp
+const auto == auto const, just a const type
+const auto* is pointer to const
+auto* const is const pointer
+```
 
+## **9.12 — Type deduction with pointers, references, and const
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```cpp
+const auto == auto const, just a const type
+const auto* is pointer to const
+auto* const is const pointer
+```
 
 
 

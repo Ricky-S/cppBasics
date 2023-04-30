@@ -8,17 +8,22 @@ void addOne(int& y)
     std::cout << "y = " << y << std::endl; // x = 2
 }
 
+#include <iostream>
+
+void nullify(int*& refptr) // refptr is now a reference to a pointer
+{
+    refptr = nullptr; // Make the function parameter a null pointer
+}
+
 int main()
 {
-
     int x{ 5 };
-    std::cout << x << '\n';  // print the value of variable x
-    std::cout << &x << '\n'; // print the memory address of variable x
-    int* ptr {}; // ptr is a null pointer, and is not holding an address
-    ptr = &x; // ptr now holds the address of x
-    *ptr = 6; 
-    std::cout << x << '\n'; // print the value of variable x
+    int* ptr{ &x }; // ptr points to x
 
+    std::cout << "ptr is " << (ptr ? "non-null\n" : "null\n"); // ptr is non-null
+
+    nullify(ptr);
+
+    std::cout << "ptr is " << (ptr ? "non-null\n" : "null\n"); // ptr is null
     return 0;
-
 }
