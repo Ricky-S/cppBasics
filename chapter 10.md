@@ -45,7 +45,7 @@ int main()
 }
 ```
 
-Unscoped enumerations are defined via the enum keyword.
+Unscoped enumerations are defined via the **enum** keyword.
 
 ```cpp
 // Define a new unscoped enumeration named Color
