@@ -110,17 +110,80 @@ int main()
 }
 ```
 
+## 10.5 — Introduction to **structs**, members, and member selection
 
+A struct (short for structure) is a program-defined data type that allows us to bundle multiple variables together into a single type. As you’ll see shortly, this makes management of related sets of variables much simpler!
 
+```cpp
+// The struct keyword is used to tell the compiler that we’re defining a struct, which we’ve named Employee (since program-defined types are typically given names starting with a capital letter).
+struct Employee
+{
+    int id {};// called data members (or member variables).
+    int age {};
+    double wage {};
+};
+// In C++, a member is a variable, function, or type that belongs to a struct (or class). All members must be declared within the struct (or class) definition.
+```
 
+```cpp
+#include <iostream>
 
+struct Employee
+{
+    int id {};
+    int age {};
+    double wage {};
+};
 
+int main()
+{
+    Employee joe;
+// To access a specific member variable, we use the member selection operator (operator.) in between the struct variable name and the member name. For example, to access Joe’s age member, we’d use joe.age.
+    joe.age = 32;  // use member selection operator (.) to select the age member of variable joe
 
+    std::cout << joe.age << '\n'; // print joe's age
 
+    return 0;
+}
+```
 
+## 10.6 — Struct aggregate initialization
 
+```cpp
+struct Employee
+{
+    int id {};
+    int age {};
+    double wage {};
+};
+// Aggregates use a form of initialization called aggregate initialization, which allows us to directly initialize the members of aggregates. To do this, we provide an initializer list as an initializer, which is just a list of comma-separated initialization values.
+int main()
+{
+    Employee frank = { 1, 32, 60000.0 }; // copy-list initialization using braced list
+    Employee robert ( 3, 45, 62500.0 );  // direct initialization using parenthesized list (C++20)
+    Employee joe { 2, 28, 45000.0 };     // list initialization using braced list (preferred)
 
+    return 0;
+}
+```
 
+```cpp
+struct Employee
+{
+    int id {};
+    int age {};
+    double wage {};
+};
+
+int main()
+{
+    Employee joe { 2, 28 }; // joe.wage will be value-initialized to 0.0
+
+    Employee joe1 {}; // value-initialize all members. means 0.
+
+    return 0;
+}
+```
 
 
 
