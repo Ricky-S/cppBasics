@@ -185,25 +185,122 @@ int main()
 }
 ```
 
+## 10.7 — Default member initialization
+
+```cpp
+struct Something
+{
+    int x;       // no initialization value (bad)
+    int y {};    // value-initialized by default
+    int z { 2 }; // explicit default value
+};
+
+int main()
+{
+    Something s1; // s1.x is uninitialized, s1.y is 0, and s1.z is 2
+
+    return 0;
+}
+```
+
+## 10.8 Struct passing and miscellany
+```cpp
+#include <iostream>
+
+struct Employee
+{
+    int id {};
+    int age {};
+    double wage {};
+};
+
+struct Company
+{
+    int numberOfEmployees {};
+    Employee CEO {}; // Employee is a struct within the Company struct
+};
+
+int main()
+{
+    Company myCompany{ 7, { 1, 32, 55000.0 } }; // Nested initialization list to initialize Employee
+    std::cout << myCompany.CEO.wage; // print the CEO's wage
+}
+```
 
 
+## 10.9 — Member selection with pointers and references
+
+When using a pointer to access the value of a member, use the member selection from pointer operator (->) instead of the member selection operator (.).
 
 
+```cpp
+#include <iostream>
 
+struct Employee
+{
+    int id{};
+    int age{};
+    double wage{};
+};
 
+int main()
+{
+    Employee joe{ 1, 34, 65000.0 };
 
+    ++joe.age;
+    joe.wage = 68000.0;
 
+    Employee* ptr{ &joe };
+    std::cout << ptr.id << '\n'; // Compile error: can't use operator. with pointers
+    std::cout << (*ptr).id << '\n'; // Not great but works: First dereference ptr, then use member selection
+    std::cout << ptr->id << '\n'; // Better: use -> to select member from pointer to object
+    //This member selection from pointer operator (->) works identically to the member selection operator (.) but does an implicit dereference of the pointer object before selecting the member. Thus ptr->id is equivalent to (*ptr).id.
+    return 0;
+}
+```
 
+## 10.10 — Class templates
+```cpp
+#include <iostream>
 
+template <typename T>
+struct Pair
+{
+    T first{};
+    T second{};
+};
 
+int main()
+{
+    Pair<int> p1{ 5, 6 };        // instantiates Pair<int> and creates object p1
+    std::cout << p1.first << ' ' << p1.second << '\n';
 
+    Pair<double> p2{ 1.2, 3.4 }; // instantiates Pair<double> and creates object p2
+    std::cout << p2.first << ' ' << p2.second << '\n';
 
+    Pair<double> p3{ 7.8, 9.0 }; // creates object p3 using prior definition for Pair<double>
+    std::cout << p3.first << ' ' << p3.second << '\n';
 
+    return 0;
+}
+```
 
-
-
-
-
+```cpp
+template <typename T>
+struct Pair
+{
+    T first{};
+    T second{};
+};
+// what if we want to have a Pair where the first member is an int and the second member is a double? We can do this by providing multiple template parameters:
+template <typename T1, typename T2>
+struct Pair
+{
+    T1 first{};
+    T2 second{};
+};
+```
+```
 
 
 
