@@ -35,8 +35,47 @@ double array[5] {};      // Initialize all elements to 0.0
 std::string array[5] {}; // Initialize all elements to an empty string
 ```
 
+Determining the length of an array
+```cpp
+#include <iostream>
+#include <iterator> // for std::size
+
+int main()
+{
+    int array[]{ 1, 1, 2, 3, 5, 8, 13, 21 };
+    std::cout << "The array has: " << std::size(array) << " elements\n";
+
+    return 0;
+}
+```
+std::size() was added in C++17. If you’re still using an old compiler, you have to use the sizeof operator instead. sizeof isn’t as easy to use as std::size() and there are a few things you have to watch out for. If you’re using a C++17-capable compiler, you can skip to section “Indexing an array out of range”.
+
+The sizeof operator can be used on arrays, and it will return the total size of the array (array length multiplied by element size).
 
 
+```cpp
+#include <iostream>
+
+int main()
+{
+    int array[]{ 1, 1, 2, 3, 5, 8, 13, 21 };
+    std::cout << sizeof(array) << '\n'; // will print the size of the array multiplied by the size of an int, 32
+    std::cout << sizeof(int) << '\n'; // will print the size of an int, 4
+
+    return 0;
+}
+```
+```cpp
+#include <iostream>
+
+int main()
+{
+    int array[]{ 1, 1, 2, 3, 5, 8, 13, 21 };
+    std::cout << "The array has: " << sizeof(array) / sizeof(array[0]) << " elements\n";
+
+    return 0;
+}
+```
 
 
 
